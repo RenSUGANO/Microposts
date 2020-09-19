@@ -47,7 +47,7 @@ class User extends Authenticatable
     
         public function loadRelationshipCounts()
     {
-        $this->loadCount(['microposts', 'followings', 'followers']);
+        $this->loadCount(['microposts', 'followings', 'followers', 'favorites']);
     }
     
     public function followings()
@@ -106,4 +106,55 @@ class User extends Authenticatable
         $userIds[] = $this->id;
         return Micropost::whereIn('user_id', $userIds);
     }
+    
+    public function favorites()
+    {
+        return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id')->withTimestamps();
+    }
+    
+    public function favorite($micropostId)
+    {
+        //　すでにお気に入りしているかの確認
+        $exist = $this->is_favorite($micropostId);
+        
+        if ($exist) {
+            //　すでにお気に入りにしていれば何もしない
+            return false;
+        } else {
+            // お気に入りしていなけれがお気に入りする
+            $this->favorites()->attach($micropostId);
+            return true;
+        }
+    }
+    
+    public function unfavorite($micropostId)
+    {
+        //　すでにお気に入りしているかの確認
+        $exist = $this->is_favorite($micropostId);
+        
+        if ($exist) {
+            //　既にお気に入りにしていればお気に入りを外す
+            $this->favorites()->detach($micropostId);
+            return true;
+        } else {
+            //　お気に入りにしていないのなら何もしない
+            return false;
+        }
+    }
+    
+    public function is_favorite($micropostId)
+    {
+        //　お気に入り中の中に$micropostIdのものが存在するか
+        return $this->favorites()->where('micopost_id', $micropostId)->exists();
+    }
 }
+
+
+
+// フォロー機能
+// usersテーブル　→　usersテーブル　を参照する。　中間テーブルは、 user_followです。　カラムは user_idです。　もう一つのカラムは follow_idです。
+
+
+// お気に入り機能
+// usersテーブル　→　○○テーブル　を参照する。　中間テーブルは、 △△テーブルです。　カラムは □□です。　もう一つのカラムは ☆☆です。
+
