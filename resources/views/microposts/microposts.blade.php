@@ -21,6 +21,14 @@
                                 {!! Form::submit('Delete', ['class' =>'btn btn-danger btn0sm']) !!}
                             {!! Form::close() !!}
                         @endif
+                        {{-- お気に入りボタン --}}
+                        {!! Form::open(['route' => ['favorites.favorite', $micropost->id], 'method' => 'store']) !!}
+                            {!! Form::submit('Favorite', ['class' => 'btn btn-light btn0sm']) !!}
+                        {!! Form::close() !!}
+                        {{-- お気に入り解除ボタン --}}
+                        {!! Form::open(['route' => ['favorites.unfavorite', $micropost->id], 'method' => 'destroy']) !!}
+                            {!! Form::submit('Favorite', ['class' => 'btn btn-success btn0sm']) !!}
+                        {!! Form::close() !!}
                     </div>
                 </div>
             </li>

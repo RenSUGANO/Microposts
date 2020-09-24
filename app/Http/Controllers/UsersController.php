@@ -71,12 +71,11 @@ class UsersController extends Controller
         
         $user->loadRelationshipCounts();
         
-        $favorites = $user->microposts()->paginate(10);
+        $favorites = $user->favorites()->paginate(10);
         
         return view('users.favorites', [
             'user' => $user,
-            'users' => $favorites,
+            'microposts' => $favorites,
         ]);
     }
 }
-
