@@ -114,6 +114,8 @@ class User extends Authenticatable
     
     public function favorite($micropostId)
     {
+        // dd($micropostId);
+        
         //　すでにお気に入りしているかの確認
         $exist = $this->is_favorite($micropostId);
         
@@ -123,6 +125,7 @@ class User extends Authenticatable
         } else {
             // お気に入りしていなけれがお気に入りする
             $this->favorites()->attach($micropostId);
+            
             return true;
         }
     }
@@ -145,7 +148,7 @@ class User extends Authenticatable
     public function is_favorite($micropostId)
     {
         //　お気に入り中の中に$micropostIdのものが存在するか
-        return $this->favorites()->where('micopost_id', $micropostId)->exists();
+        return $this->favorites()->where('micropost_id', $micropostId)->exists();
     }
 }
 
